@@ -73,12 +73,8 @@ print(docs_embeddings)
 entities= []
 
 for i in range(len(docs_embeddings["dense"])):
-    # print(i)
-    # print(docs_embeddings["dense"][i])
     entities.append({"embedding": docs_embeddings["dense"][i], "index": i})
 
-# entities = [{"embedding": doc.tolist(), "index": docs_embeddings['dense'].index(doc)} for doc in docs_embeddings['dense']]
-# print(entities)
 insert_result = collection.insert(entities)
 
 collection.load()
@@ -90,9 +86,6 @@ search_params = {
 
 queries = ["What are Spindles"]
 query_embeddings = bge_m3_ef.encode_queries(queries)  # Example: search with the first two embeddings
-# query_embeddings1 = docs_embeddings['dense'][2:3]  
-# print(query_embeddings['dense'])
-# print(query_embeddings1)
 result = collection.search(
     query_embeddings['dense'], 
     "embedding", 
