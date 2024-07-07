@@ -140,8 +140,22 @@ services:
       - "pulsar"
       - "minio"
 
-  datanode:
-    container_name: milvus-datanode
+  # datanode:
+  #   container_name: milvus-datanode
+  #   image: milvusdb/milvus:v2.4.4
+  #   command: ["milvus", "run", "datanode"]
+  #   environment:
+  #     ETCD_ENDPOINTS: etcd:2379
+  #     MINIO_ADDRESS: minio:9000
+  #     PULSAR_ADDRESS: pulsar://pulsar:6650
+  #   depends_on:
+  #     - "datacoord"
+
+# ----------------------------------------------------------------------------------------
+# If you need multiple instances of a service, say DataNode, use the following script:
+# ----------------------------------------------------------------------------------------
+  datanode-1:
+    container_name: milvus-datanode-1
     image: milvusdb/milvus:v2.4.4
     command: ["milvus", "run", "datanode"]
     environment:
@@ -151,41 +165,27 @@ services:
     depends_on:
       - "datacoord"
 
-# ----------------------------------------------------------------------------------------
-# If you need multiple instances of a service, say DataNode, use the following script:
-# ----------------------------------------------------------------------------------------
-#  datanode-1:
-#    container_name: milvus-datanode-1
-#    image: milvusdb/milvus:v2.4.4
-#    command: ["milvus", "run", "datanode"]
-#    environment:
-#      ETCD_ENDPOINTS: etcd:2379
-#      MINIO_ADDRESS: minio:9000
-#      PULSAR_ADDRESS: pulsar://pulsar:6650
-#    depends_on:
-#      - "datacoord"
-#
-#  datanode-2:
-#    container_name: milvus-datanode-2
-#    image: milvusdb/milvus:v2.4.4
-#    command: ["milvus", "run", "datanode"]
-#    environment:
-#      ETCD_ENDPOINTS: etcd:2379
-#      MINIO_ADDRESS: minio:9000
-#      PULSAR_ADDRESS: pulsar://pulsar:6650
-#    depends_on:
-#      - "datacoord"
-#
-#  datanode-3:
-#    container_name: milvus-datanode-3
-#    image: milvusdb/milvus:v2.4.4
-#    command: ["milvus", "run", "datanode"]
-#    environment:
-#      ETCD_ENDPOINTS: etcd:2379
-#      MINIO_ADDRESS: minio:9000
-#      PULSAR_ADDRESS: pulsar://pulsar:6650
-#    depends_on:
-#      - "datacoord"
+  datanode-2:
+    container_name: milvus-datanode-2
+    image: milvusdb/milvus:v2.4.4
+    command: ["milvus", "run", "datanode"]
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+      PULSAR_ADDRESS: pulsar://pulsar:6650
+    depends_on:
+      - "datacoord"
+
+  datanode-3:
+    container_name: milvus-datanode-3
+    image: milvusdb/milvus:v2.4.4
+    command: ["milvus", "run", "datanode"]
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+      PULSAR_ADDRESS: pulsar://pulsar:6650
+    depends_on:
+      - "datacoord"
 
 
 networks:

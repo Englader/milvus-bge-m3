@@ -24,3 +24,6 @@ docker compose command to start standalone **docker-compose -f docker-compose-v2
 
 - Install requirements with **pip3 install -r requirements.txt**
 - Run the script with **python3 hello_milvus.py**
+
+pip install --upgrade pymilvus
+pip install "pymilvus[model]"
