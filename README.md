@@ -37,7 +37,7 @@ Make sure yo have an instance of milvus running
 
 Create a folder called pdf_files and insert all the pdf files inside
 
-bgem3.py script will process all documents by pages and will insert them inside milvus in a collection where the schema is created with an index, the emeded pages and the index of the page
+bgem3.py script will process all documents by pages and will insert them inside milvus in a collection where the schema is created with an id, the emeded pages and the index of the page
 
 afterwards there is a querry defined embedded an queried in milvus to find the closes distance to the target
 
