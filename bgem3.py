@@ -25,12 +25,11 @@ for file in onlyfiles:
             # print(text)
             pagesText.append(text.replace("\n", " ")) 
 
-
-print(pagesText)
+# print(pagesText)
 
 bge_m3_ef = BGEM3EmbeddingFunction(
     model_name='BAAI/bge-m3', # Specify the model name
-    device='cuda:0', # Specify the device to use, e.g., 'cpu' or 'cuda:0'
+    device='cpu', # Specify the device to use, e.g., 'cpu' or 'cuda:0'
     use_fp16=False # Specify whether to use fp16. Set to `False` if `device` is `cpu`.
 )
 
@@ -69,7 +68,7 @@ collection.load()
 
 docs_embeddings = bge_m3_ef.encode_documents(pagesText)
 
-print(docs_embeddings)
+# print(docs_embeddings)
 entities= []
 
 for i in range(len(docs_embeddings["dense"])):
@@ -84,7 +83,7 @@ search_params = {
     "params": {"nprobe": 10}
 }
 
-queries = ["What are Spindles"]
+queries = ["What was written in the notice board in the selfish giant?"]
 query_embeddings = bge_m3_ef.encode_queries(queries)  # Example: search with the first two embeddings
 result = collection.search(
     query_embeddings['dense'], 
@@ -93,10 +92,82 @@ result = collection.search(
     limit=6, 
     output_fields=["index"]
 )
-
-print(len(pagesText))
-
+# for hits in result:
+#     for hit in hits:
+#         print(f"hit: {hit}, ")
+#
+# Print the text chunks corresponding to the top search results
 for hits in result:
     for hit in hits:
-        print(f"hit: {hit}, ")
+        print(f"hit: {hit}, text chunk: {pagesText[hit.entity.get('index')]}")
 
+first_index = result[0][0].entity.get('index')
+first_chunk = pagesText[first_index]
+
+
+import openai
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+
+def get_gpt4_response(context, question, model='gpt-3.5-turbo', temperature=0.1):
+
+    prompt = f"Context: {context}\n\nQuestion: {question}\n\nAnswer:"
+
+    client = OpenAI(
+        # This is the default and can be omitted
+        api_key=os.environ.get("OPENAI_API_KEY"),
+    )
+
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role":"system",
+                "content":"""You are expert at answering questions about stories from childrens book. A user gives you context and then he asks you a question. 
+                You answer the question only based from the context that is provided.
+                """
+            },
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        model=model,
+        temperature=temperature,
+    )
+    response = chat_completion.choices[0].message.content
+    return response
+
+
+# context = first_chunk
+# question = queries[0]
+# answer = get_gpt4_response(context, question)
+#
+#
+# print(f"Question: {question}")
+# print(f"Answer from llm: {answer}")
+# print()
+
+context = pagesText
+question = "Summarize these two children stories for me. Return answer as a list of dictionaries with fields: {'title':'Summary of (the name of the story)', 'summary':'summary of the story'}"
+answer = get_gpt4_response(context, question)
+
+
+print(f"Question: {question}")
+print(f"Answer from llm: {answer}")
+print()
+
+
+context = answer
+question = """Create a new childrens story based on the summary of these two children stories for me.
+Return answer in JSON format with fields: {'title':'', 'story':''}
+"""
+answer = get_gpt4_response(context, question, model='gpt-4o', temperature=0.8)
+
+
+print(f"Question: {question}")
+print(f"Answer from llm: {answer}")
+print()
