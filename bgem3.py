@@ -92,10 +92,6 @@ result = collection.search(
     limit=6, 
     output_fields=["index"]
 )
-# for hits in result:
-#     for hit in hits:
-#         print(f"hit: {hit}, ")
-#
 # Print the text chunks corresponding to the top search results
 for hits in result:
     for hit in hits:
@@ -171,3 +167,4 @@ answer = get_gpt4_response(context, question, model='gpt-4o', temperature=0.8)
 print(f"Question: {question}")
 print(f"Answer from llm: {answer}")
 print()
+
