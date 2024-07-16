@@ -167,4 +167,3 @@ answer = get_gpt4_response(context, question, model='gpt-4o', temperature=0.8)
 print(f"Question: {question}")
 print(f"Answer from llm: {answer}")
 print()
-
